@@ -21,3 +21,13 @@ class ServisAlatKesehatan(models.Model):
         ('done', 'Selesai'),
         ('cancel', 'Batal'),
     ], string='Status', default='draft')
+
+def action_progress(self):
+    self.status = 'progress'
+
+def action_done(self):
+    self.servis_selesai = fields.Datetime.now()
+    self.status = 'done'
+
+def action_cancel(self):
+    self.status = 'cancel'
