@@ -10,16 +10,17 @@ class ServisAlatKesehatan(models.Model):
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     product_id = fields.Many2one('product.product', string='Alat Kesehatan', required=True)
     technician_id = fields.Many2one('res.users', string='Teknisi', required=True)
-    servis_masuk = fields.Datetime(string='Servis Masuk', required=True)
+    servis_masuk = fields.Datetime(string='Kapan Servis Masuk', required=True)
     perkiraan_selesai = fields.Datetime(string='Perkiraan Servis Selesai')
     servis_selesai = fields.Datetime(string='Servis Selesai')
+    servis_keluar = fields.Datetime(string='Kapan Servis Keluar')
     complaint = fields.Text(string='Keluhan Customer')
     result = fields.Text(string='Hasil Servis')
     status = fields.Selection([
         ('draft', 'Draft'),
-        ('progress', 'Servis'),
-        ('done', 'Selesai'),
-        ('cancel', 'Batal'),
+        ('progress', 'Sedang Servis'),
+        ('done', 'Selesai Servis'),
+        ('cancel', 'Batal Servis')
     ], string='Status', default='draft')
 
 def action_progress(self):
