@@ -1,1 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- LIST VIEW : tampilan tabel -->
+     <record>
+        <field name="name">servis.alat.kesehatan.list</field>
+        <field name="model">servis.alat.kesehatan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="product_id"/>
+                <field name="technician_id"/>
+                <field name="servis_masuk"/>
+                <field name="perkiraan_selesai"/>
+                <field name="servis_selesai"/>
+                <field name="status"
+                       decoration-warning="status == 'draft'"
+                       decoration-success="status == 'done'"
+                       decoration-info="status == 'progress'"
+                       decoration-danger="status == 'cancel' or status == 'fail'"/>
+            </list>
+        </field>
+     </record>
+
+     <!-- FORM VIEW : tampilan detail satu record -->
+      <record>
+        <field name="name">servis.alat.kesehatan.form</field>
+        <field name="model">servis.alat.kesehatan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_progress" string="Servis" type="object" class="btn-primary" invisible="status != 'draft'"/>
+                    <button name="action_cancel" string="Batal" type="object" class="btn-danger" invisible="status != 'draft'"/>
+                    <button name="action_done" string="Selesai" type="object" class="btn-primary" invisible="status != 'progress'"/>
+                    <button name="action_fail" string="Gagal" type="object" class="btn-danger" invisible="status != 'progress'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,progress,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Informasi Servis">
+                            <field name="name"/>
+                            <field name="customer_id"/>
+                            <field name="product_id"/>
+                            <field name="technician_id"/>
+                        </group>
+                        <group string="Waktu Servis">
+                            <field name="servis_masuk" invisible="status not in ('progress', 'fail', 'done')"/>
+                            <field name="perkiraan_selesai"/>
+                            <field name="servis_selesai" invisible="status != 'done'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="problem" nolabel="1" placeholder="Tulis keluhan customer..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+      </record>
+
+</odoo>

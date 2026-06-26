@@ -14,21 +14,25 @@ class ServisAlatKesehatan(models.Model):
     perkiraan_selesai = fields.Datetime(string='Perkiraan Servis Selesai')
     servis_selesai = fields.Datetime(string='Servis Selesai')
     servis_keluar = fields.Datetime(string='Kapan Servis Keluar')
-    complaint = fields.Text(string='Keluhan Customer')
+    problem = fields.Text(string='Keluhan Customer')
     result = fields.Text(string='Hasil Servis')
     status = fields.Selection([
         ('draft', 'Draft'),
         ('progress', 'Sedang Servis'),
         ('done', 'Selesai Servis'),
-        ('cancel', 'Batal Servis')
+        ('cancel', 'Batal Servis'),
+        ('fail', 'Gagal Servis'),
     ], string='Status', default='draft')
 
     def action_progress(self):
         self.status = 'progress'
 
+    def action_cancel(self):
+        self.status = 'cancel'
+
+    def action_fail(self):
+        self.status = 'fail'
+
     def action_done(self):
         self.servis_selesai = fields.Datetime.now()
         self.status = 'done'
-
-    def action_cancel(self):
-        self.status = 'cancel'
