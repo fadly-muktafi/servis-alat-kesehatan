@@ -1,1 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- 1. LIST VIEW : tampilan tabel -->
+    <record id="view_servis_alat_kesehatan_list" model="ir.ui.view">
+        <field name="name">servis.alat.kesehatan.list</field>
+        <field name="model">servis.alat.kesehatan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="product_id"/>
+                <field name="servis_masuk"/>
+                <field name="perkiraan_selesai"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 2. FORM VIEW : tampilan detail satu record -->
+    <record id="view_servis_alat_kesehatan_form" model="ir.ui.view">
+        <field name="name">servis.alat.kesehatan.form</field>
+        <field name="model">servis.alat.kesehatan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_progress" string="Servis" type="object" class="btn-primary" invisible="status != 'draft'"/>
+                    <button name="action_cancel" string="Batal" type="object" class="btn-danger" invisible="status != 'draft'"/>
+                    <button name="action_done" string="Selesai" type="object" class="btn-primary" invisible="status != 'progress'"/>
+                    <button name="action_failed" string="Gagal" type="object" class="btn-danger" invisible="status != 'progress'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,progress,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Informasi Servis">
+                            <field name="name"/>
+                            <field name="customer_id"/>
+                            <field name="product_id"/>
+                            <field name="technician_id"/>
+                        </group>
+                        <group string="Waktu Servis">
+                            <field name="servis_masuk" invisible="status != 'progress'"/>
+                            <field name="perkiraan_selesai"/>
+                            <field name="servis_gagal" invisible="status != 'failed'"/>
+                            <field name="servis_selesai" invisible="status != 'done'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="problem" nolabel="1" placeholder="Deskripsikan masalah..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 3. SEARCH VIEW : filter dan pencarian -->
+    <record id="view_servis_alat_kesehatan_search" model="ir.ui.view">
+        <field name="name">servis.alat.kesehatan.search</field>
+        <field name="model">servis.alat.kesehatan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Kode Servis"/>
+                <field name="customer_id"/>
+                <field name="product_id"/>
+                <filter string="Draft" name="filter_draft" domain="[('status', '=', 'draft')]"/>
+                <filter string="Batal Servis" name="filter_cancel" domain="[('status', '=', 'cancel')]"/>
+                <filter string="Sedang Servis" name="filter_progress" domain="[('status', '=', 'progress')]"/>
+                <filter string="Gagal Servis" name="filter_failed" domain="[('status', '=', 'failed')]"/>
+                <filter string="Selesai Servis" name="filter_done" domain="[('status', '=', 'done')]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- 4. ACTION + MENU -->
+    <record id="action_servis_alat_kesehatan" model="ir.actions.act_window">
+        <field name="name">Servis Alat Kesehatan</field>
+        <field name="res_model">servis.alat.kesehatan</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_servis_alat_kesehatan_root"
+              name="Servis Alat Kesehatan"
+              sequence="100"/>
+    <menuitem id="menu_servis_alat_kesehatan_list"
+              name="Daftar Servis"
+              parent="menu_servis_alat_kesehatan_root"
+              action="action_servis_alat_kesehatan"
+              sequence="10"/>
+
+</odoo>
