@@ -39,7 +39,7 @@
                     <button name="action_completed" string="Selesai" type="object" class="btn-primary" invisible="status != 'progress'"/>
                     <button name="action_failed" string="Gagal" type="object" class="btn-danger" invisible="status != 'progress'"/>
                     <button name="action_released" string="Dikembalikan" type="object" class="btn-primary" invisible="status != 'completed'"/>
-                    <field name="status" widget="statusbar" statusbar_visible="draft,progress,completed,released"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,received,progress,completed,released"/>
                 </header>
                 <sheet>
                     <group>
@@ -60,8 +60,10 @@
                         </group>
                     </group>
                     <group>
-                        <field name="problem" nolabel="1" placeholder="Deskripsikan masalah..."/>
-                        <field name="result" nolabel="1" placeholder="Deskripsikan hasil servis..." invisible="status not in ('failed', 'completed', 'released')"/>
+                        <field name="problem" placeholder="Deskripsikan masalah..."/>
+                    </group>
+                    <group>
+                         <field name="result" placeholder="Deskripsikan hasil servis..." invisible="status not in ('failed', 'completed', 'released')"/>
                     </group>
                 </sheet>
             </form>
