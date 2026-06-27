@@ -10,29 +10,32 @@ class ServisAlatKesehatan(models.Model):
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     product_id = fields.Many2one('product.product', string='Alat Kesehatan', required=True)
     technician_id = fields.Many2one('res.users', string='Teknisi', required=True)
-    servis_masuk = fields.Datetime(string='Kapan Servis Masuk', required=True)
-    perkiraan_selesai = fields.Datetime(string='Perkiraan Servis Selesai')
+    servis_masuk = fields.Datetime(string='Servis Masuk')
+    perkiraan_selesai = fields.Datetime(string='Perkiraan Selesai', required=True)
+    servis_gagal = fields.Datetime(string='Gagal Servis')
     servis_selesai = fields.Datetime(string='Servis Selesai')
-    servis_keluar = fields.Datetime(string='Kapan Servis Keluar')
-    problem = fields.Text(string='Keluhan Customer')
+    servis_keluar = fields.Datetime(string='Servis Keluar')
+    problem = fields.Text(string='Keluhan Customer', required=True)
     result = fields.Text(string='Hasil Servis')
     status = fields.Selection([
         ('draft', 'Draft'),
-        ('progress', 'Sedang Servis'),
-        ('done', 'Selesai Servis'),
         ('cancel', 'Batal Servis'),
-        ('fail', 'Gagal Servis'),
+        ('progress', 'Sedang Servis'),
+        ('failed', 'Gagal Servis'),
+        ('done', 'Selesai Servis'),
     ], string='Status', default='draft')
 
-    def action_progress(self):
-        self.status = 'progress'
+def action_cancel(self):
+    self.status = 'cancel'
 
-    def action_cancel(self):
-        self.status = 'cancel'
+def action_progress(self):
+    self.servis_masuk = fields.Datetime.now()
+    self.status = 'progress'
 
-    def action_fail(self):
-        self.status = 'fail'
+def action_failed(self):
+    self.servis_gagal = fields.Datetime.now()
+    self.status = 'failed'
 
-    def action_done(self):
-        self.servis_selesai = fields.Datetime.now()
-        self.status = 'done'
+def action_done(self):
+    self.servis_selesai = fields.Datetime.now()
+    self.status = 'done'
