@@ -15,11 +15,13 @@
                 <field name="servis_masuk"/>
                 <field name="perkiraan_selesai"/>
                 <field name="servis_selesai"/>
-                <field name="status"
-                       decoration-warning="status == 'draft'"
-                       decoration-success="status == 'done'"
+                <field name="servis_keluar"/>
+                <field name="status" widget="badge"
+                       decoration-warning="status == 'received'"
+                       decoration-success="status == 'released'"
+                       decoration-primary="status == 'completed'"
                        decoration-info="status == 'progress'"
-                       decoration-danger="status == 'cancel' or status == 'fail'"/>
+                       decoration-danger="status == 'cancelled' or status == 'failed'"/>
             </list>
         </field>
      </record>
@@ -31,11 +33,13 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_progress" string="Servis" type="object" class="btn-primary" invisible="status != 'draft'"/>
-                    <button name="action_cancel" string="Batal" type="object" class="btn-danger" invisible="status != 'draft'"/>
-                    <button name="action_done" string="Selesai" type="object" class="btn-primary" invisible="status != 'progress'"/>
+                    <button name="action_received" string="Terima" type="object" class="btn-primary" invisible="status != 'draft'"/>
+                    <button name="action_progress" string="Servis" type="object" class="btn-primary" invisible="status != 'received'"/>
+                    <button name="action_cancel" string="Batal" type="object" class="btn-danger" invisible="status != 'received'"/>
+                    <button name="action_completed" string="Selesai" type="object" class="btn-primary" invisible="status != 'progress'"/>
                     <button name="action_failed" string="Gagal" type="object" class="btn-danger" invisible="status != 'progress'"/>
-                    <field name="status" widget="statusbar" statusbar_visible="draft,progress,done"/>
+                    <button name="action_released" string="Dikembalikan" type="object" class="btn-primary" invisible="status != 'completed'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,progress,completed,released"/>
                 </header>
                 <sheet>
                     <group>
@@ -46,14 +50,18 @@
                             <field name="technician_id"/>
                         </group>
                         <group string="Waktu Servis">
-                            <field name="servis_masuk" invisible="status not in ('progress', 'failed', 'done')"/>
+                            <field name="servis_masuk" invisible="status not in ('received', 'cancelled', 'progress', 'failed', 'completed', 'released')"/>
+                            <field name="servis_batal" invisible="status != 'cancelled'"/>
+                            <field name="servis_mulai" invisible="status not in ('progress', 'failed', 'completed', 'released')"/>
                             <field name="perkiraan_selesai"/>
                             <field name="servis_gagal" invisible="status != 'failed'"/>
-                            <field name="servis_selesai" invisible="status != 'done'"/>
+                            <field name="servis_selesai" invisible="status not in ('completed', 'released')"/>
+                            <field name="servis_keluar" invisible="status != 'released'"/>
                         </group>
                     </group>
                     <group>
                         <field name="problem" nolabel="1" placeholder="Deskripsikan masalah..."/>
+                        <field name="result" nolabel="1" placeholder="Deskripsikan hasil servis..." invisible="status not in ('failed', 'completed', 'released')"/>
                     </group>
                 </sheet>
             </form>
@@ -66,16 +74,19 @@
         <field name="model">servis.alat.kesehatan</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" string="Kode Servis"/>
+                <field name="name"/>
                 <field name="customer_id"/>
                 <field name="product_id"/>
                 <field name="technician_id"/>
                 <field name="servis_masuk"/>
-                <filter string="Draft" name="filter_draft" domain="[('status', '=', 'draft')]"/>
-                <filter string="Batal Servis" name="filter_cancel" domain="[('status', '=', 'cancel')]"/>
+                <field name="servis_selesai"/>
+                <field name="servis_keluar"/>
+                <filter string="Diterima" name="filter_received" domain="[('status', '=', 'received')]"/>
+                <filter string="Batal Servis" name="filter_cancelled" domain="[('status', '=', 'cancelled')]"/>
                 <filter string="Sedang Servis" name="filter_progress" domain="[('status', '=', 'progress')]"/>
                 <filter string="Gagal Servis" name="filter_failed" domain="[('status', '=', 'failed')]"/>
-                <filter string="Selesai Servis" name="filter_done" domain="[('status', '=', 'done')]"/>
+                <filter string="Selesai Servis" name="filter_completed" domain="[('status', '=', 'completed')]"/>
+                <filter string="Dikembalikan" name="filter_released" domain="[('status', '=', 'released')]"/>
             </search>
         </field>
     </record>
